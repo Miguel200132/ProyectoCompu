@@ -171,3 +171,6 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 
 prueba_clonacion = c(1,2,3)
+
+
+prueba_para_evelio = c(1,2,3,4)
