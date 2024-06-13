@@ -134,3 +134,35 @@ print(grafico11)
 # a lo largo de los años han presentado una tendencia al aumento en la cantidad
 # de votos Sí, e igualmente se observa un periodo a inicios y finales de los 
 # años 80 en el cual la cantidad de votos Sí aumento considerablemente.
+
+install.packages("DT")
+library(DT)
+
+ui <- fluidPage(
+  
+  titlePanel("Tabla Votos Original"),
+  
+  sidebarLayout(
+    sidebarPanel(
+    ),
+    
+    mainPanel(
+      DTOutput("tabla_votos")
+    )
+  )
+)
+
+server <- function(input, output) {
+  
+  output$tabla_votos <- renderDT({
+  
+    datatable(votes, 
+              options = list(
+                searching = TRUE
+              )
+    )
+  })
+}
+
+shinyApp(ui = ui, server = server)
+
