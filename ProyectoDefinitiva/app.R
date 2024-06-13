@@ -50,4 +50,38 @@ server <- function(input, output) {
 # Run the application 
 shinyApp(ui = ui, server = server)
 
-probando proyecto
+plibrary(shiny)
+
+# Define UI
+ui <- fluidPage(
+  titlePanel("Histograma Interactivo"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("bins",
+                  "Número de bins:",
+                  min = 1,
+                  max = 50,
+                  value = 30)
+    ),
+    mainPanel(
+      plotOutput("histogram")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output) {
+  
+  # Renderiza el histograma
+  output$histogram <- renderPlot({
+    # Genera datos aleatorios
+    data <- rnorm(1000)
+    
+    # Crea el histograma con el número de bins especificado por el usuario
+    hist(data, breaks = input$bins, col = 'blue', border = 'white',
+         xlab = "Valor", main = "Histograma de Datos Aleatorios")
+  })
+}
+
+# Crea una aplicación Shiny
+shinyApp(ui = ui, server = server)
