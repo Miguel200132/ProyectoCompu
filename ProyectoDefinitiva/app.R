@@ -174,3 +174,6 @@ prueba_clonacion = c(1,2,3)
 
 
 prueba_para_evelio = c(1,2,3,4)
+
+prueba_para_miguel = "hola miguel"
+print(prueba_para_miguel)
