@@ -139,21 +139,13 @@ install.packages("DT")
 library(DT)
 
 ui <- fluidPage(
-  
   titlePanel("Tabla Votos Original"),
-  
-  sidebarLayout(
-    sidebarPanel(
-    ),
-    
-    mainPanel(
-      DTOutput("tabla_votos")
-    )
+  mainPanel(
+    DTOutput("tabla_votos")
   )
 )
 
 server <- function(input, output) {
-  
   output$tabla_votos <- renderDT({
     datatable(votes, filter = 'top', options = list(
       columnDefs = list(
@@ -168,12 +160,7 @@ server <- function(input, output) {
     ))
   })
 }
+
 shinyApp(ui = ui, server = server)
 
-prueba_clonacion = c(1,2,3)
 
-
-prueba_para_evelio = c(1,2,3,4)
-
-prueba_para_miguel = "hola miguel"
-print(prueba_para_miguel)
