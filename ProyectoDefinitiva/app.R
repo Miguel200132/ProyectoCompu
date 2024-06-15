@@ -165,15 +165,14 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   output$tabla_votos <- renderDT({
-    datatable(votes_filtradosnecesarios, filter = 'top', options = list(
+    datatable(votes_filtradosnecesarios, filter = 'none', options = list(
       columnDefs = list(
-        list(targets = c(1, 2), searchable = TRUE)
+        list(targets = c(1, 2), searchable = FALSE) 
       ),
-      format = list(
-        list(
-          type = 'num',
-          targets = c(0, 3, 4)
-        )
+      initComplete = JS(
+        "function(settings, json) {",
+        "$('.dataTables_filter input').attr('placeholder', 'Buscar por country o year');",  
+        "}"
       )
     ))
   })
@@ -200,3 +199,4 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
+
