@@ -144,9 +144,21 @@ install.packages("DT")
 library(DT)
 
 ui <- fluidPage(
-  titlePanel("Tabla Votos Filtrados"),
-  mainPanel(
-    DTOutput("tabla_votos")
+  
+  titlePanel("App sobre tarea 2"),
+  
+  tabsetPanel(
+    tabPanel("Tabla Votos Filtrados", 
+             DTOutput("tabla_votos")),
+    tabPanel("Resultados de Votación", 
+             tabsetPanel(
+               tabPanel("Votos 'Yes'", 
+                        tags$style(".table-bordered { border: none; }"),
+                        tableOutput("tabla_yes")),
+               tabPanel("Votos 'No'", 
+                        tags$style(".table-bordered { border: none; }"),
+                        tableOutput("tabla_no"))
+             ))
   )
 )
 
@@ -155,7 +167,7 @@ server <- function(input, output) {
   output$tabla_votos <- renderDT({
     datatable(votes_filtradosnecesarios, filter = 'top', options = list(
       columnDefs = list(
-        list(targets = c(1, 2), searchable = TRUE) 
+        list(targets = c(1, 2), searchable = TRUE)
       ),
       format = list(
         list(
@@ -166,8 +178,25 @@ server <- function(input, output) {
     ))
   })
   
+  resultados <- reactive({
+    calcular_resultados(votes)
+  })
+  
+  yes <- reactive({
+    filter(resultados(), vote == 1)
+  })
+  
+  no <- reactive({
+    filter(resultados(), vote == 3)
+  })
+  
+  output$tabla_yes <- renderTable({
+    yes()
+  }, bordered = TRUE) 
+  
+  output$tabla_no <- renderTable({
+    no()
+  }, bordered = TRUE)
 }
 
 shinyApp(ui = ui, server = server)
-
-
