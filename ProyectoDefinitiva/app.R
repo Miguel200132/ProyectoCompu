@@ -144,26 +144,28 @@ install.packages("DT")
 library(DT)
 
 ui <- fluidPage(
-  titlePanel("Tabla Votos Original"),
+  titlePanel("Tabla Votos Filtrados"),
   mainPanel(
     DTOutput("tabla_votos")
   )
 )
 
 server <- function(input, output) {
+  
   output$tabla_votos <- renderDT({
-    datatable(votes, filter = 'top', options = list(
+    datatable(votes_filtradosnecesarios, filter = 'top', options = list(
       columnDefs = list(
-        list(targets = 1:4 - 1, searchable = TRUE) 
+        list(targets = c(1, 2), searchable = TRUE) 
       ),
       format = list(
         list(
           type = 'num',
-          targets = c(0, 1, 2, 3)
+          targets = c(0, 3, 4)
         )
       )
     ))
   })
+  
 }
 
 shinyApp(ui = ui, server = server)
