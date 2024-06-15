@@ -1,11 +1,18 @@
-library(shiny)
-
 install.packages("ggplot2")
 install.packages("tidyverse")
 install.packages("countrycode")
+
 library(countrycode)
 library(ggplot2)
 library(dplyr)
+library(shiny)
+
+setwd("C:/Users/Evelio/Documents/Rstudio Worrking Directory")
+
+votes <- readRDS("C:/Users/Evelio/Documents/Rstudio Worrking Directory/
+                 votes.rds")
+descriptions <- readRDS("C:/Users/Evelio/Documents/Rstudio Worrking Directory/
+                        descriptions.rds")
 
 #Parte 1
 
