@@ -9,10 +9,8 @@ library(shiny)
 
 setwd("C:/Users/Evelio/Documents/Rstudio Worrking Directory")
 
-votes <- readRDS("C:/Users/Evelio/Documents/Rstudio Worrking Directory/
-                 votes.rds")
-descriptions <- readRDS("C:/Users/Evelio/Documents/Rstudio Worrking Directory/
-                        descriptions.rds")
+votes <- readRDS("C:/Users/Evelio/Documents/Rstudio Worrking Directory/votes.rds")
+descriptions <- readRDS("C:/Users/Evelio/Documents/Rstudio Worrking Directory/descriptions.rds")
 
 #Parte 1
 
