@@ -143,27 +143,42 @@ print(grafico11)
 install.packages("DT")
 library(DT)
 
+
 ui <- fluidPage(
   titlePanel("App sobre tarea 2"),
   
   tabsetPanel(
     tabPanel("Tabla Votos Filtrados", 
              DTOutput("tabla_votos")),
-    tabPanel("Resultados de Votación", 
-             tabsetPanel(
-               tabPanel("Votos 'Yes'", 
-                        tags$style(".table-bordered { border: none; }"),
-                        tableOutput("tabla_yes")),
-               tabPanel("Votos 'No'", 
-                        tags$style(".table-bordered { border: none; }"),
-                        tableOutput("tabla_no"))
-             )),
+    tabPanel("Tabla de Resultados", 
+             dataTableOutput("tabla_resultados")),
     tabPanel("Tabla Agrupación por Año",
              dataTableOutput("tabla_resumen"))
   )
 )
 
+
 server <- function(input, output) {
+  
+  resultados <- reactive({
+    votes %>%
+      group_by(vote) %>%
+      summarise(
+        total = n(),
+        porcentaje = (n() / nrow(votes)) * 100
+      )
+  })
+  
+  output$tabla_resultados <- renderDataTable({
+    datatable(
+      resultados(),
+      options = list(
+        searching = FALSE, 
+        paging = FALSE,    
+        info = FALSE       
+      )
+    )
+  })
   
   output$tabla_votos <- renderDT({
     datatable(votes_filtradosnecesarios, filter = 'none', options = list(
@@ -178,25 +193,6 @@ server <- function(input, output) {
     ))
   })
   
-  resultados <- reactive({
-    calcular_resultados(votes)
-  })
-  
-  yes <- reactive({
-    filter(resultados(), vote == 1)
-  })
-  
-  no <- reactive({
-    filter(resultados(), vote == 3)
-  })
-  
-  output$tabla_yes <- renderTable({
-    yes()
-  }, bordered = TRUE) 
-  
-  output$tabla_no <- renderTable({
-    no()
-  }, bordered = TRUE)
   
   output$tabla_resumen <- renderDataTable({
     datatable(agrupacion_año, 
