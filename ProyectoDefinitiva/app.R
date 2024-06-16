@@ -144,7 +144,6 @@ install.packages("DT")
 library(DT)
 
 ui <- fluidPage(
-  
   titlePanel("App sobre tarea 2"),
   
   tabsetPanel(
@@ -158,7 +157,9 @@ ui <- fluidPage(
                tabPanel("Votos 'No'", 
                         tags$style(".table-bordered { border: none; }"),
                         tableOutput("tabla_no"))
-             ))
+             )),
+    tabPanel("Tabla Agrupación por Año",
+             dataTableOutput("tabla_resumen"))
   )
 )
 
@@ -196,7 +197,16 @@ server <- function(input, output) {
   output$tabla_no <- renderTable({
     no()
   }, bordered = TRUE)
+  
+  output$tabla_resumen <- renderDataTable({
+    datatable(agrupacion_año, 
+              options = list(
+                paging = FALSE, 
+                searching = FALSE 
+              ))
+  })
 }
 
 shinyApp(ui = ui, server = server)
+
 
