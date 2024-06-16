@@ -1,11 +1,15 @@
 install.packages("ggplot2")
 install.packages("tidyverse")
 install.packages("countrycode")
+install.packages("plotly")
+install.packages("DT")
 
 library(countrycode)
 library(ggplot2)
 library(dplyr)
 library(shiny)
+library(plotly)
+library(DT)
 
 setwd("C:/Users/Evelio/Documents/Rstudio Worrking Directory")
 
@@ -139,9 +143,6 @@ print(grafico11)
 # a lo largo de los años han presentado una tendencia al aumento en la cantidad
 # de votos Sí, e igualmente se observa un periodo a inicios y finales de los 
 # años 80 en el cual la cantidad de votos Sí aumento considerablemente.
-
-install.packages("DT")
-library(DT)
 
 
 ui <- fluidPage(
