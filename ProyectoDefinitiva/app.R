@@ -187,7 +187,7 @@ server <- function(input, output) {
       ),
       initComplete = JS(
         "function(settings, json) {",
-        "$('.dataTables_filter input').attr('placeholder', 'Buscar por country o year');",  
+        "$('.dataTables_filter input').attr('placeholder', 'Buscar por country');",  
         "}"
       )
     ))
