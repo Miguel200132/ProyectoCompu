@@ -153,7 +153,9 @@ ui <- fluidPage(
     tabPanel("Tabla de Resultados", 
              dataTableOutput("tabla_resultados")),
     tabPanel("Tabla Agrupación por Año",
-             dataTableOutput("tabla_resumen"))
+             dataTableOutput("tabla_resumen")),
+    tabPanel("Tabla Agrupacion por Pais",
+             dataTableOutput("tabla_resultados_pais"))
   )
 )
 
@@ -180,6 +182,7 @@ server <- function(input, output) {
     )
   })
   
+  
   output$tabla_votos <- renderDT({
     datatable(votes_filtradosnecesarios, filter = 'none', options = list(
       columnDefs = list(
@@ -193,7 +196,6 @@ server <- function(input, output) {
     ))
   })
   
-  
   output$tabla_resumen <- renderDataTable({
     datatable(agrupacion_año, 
               options = list(
@@ -201,8 +203,16 @@ server <- function(input, output) {
                 searching = FALSE 
               ))
   })
+  
+  output$tabla_resultados_pais <- renderDataTable({
+    datatable(agrupacion_pais, 
+              options = list(
+                paging = TRUE,
+                searching = TRUE,
+                pageLength = 10
+              ))
+  })
 }
 
+
 shinyApp(ui = ui, server = server)
-
-
