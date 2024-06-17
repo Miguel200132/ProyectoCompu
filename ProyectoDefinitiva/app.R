@@ -273,12 +273,9 @@ server <- function(input, output) {
     
     # dibuja el histograma
     
-    data9 <- data.frame(Año = agrupacion_año$`votes_filtradosnecesarios$year`,
-                        Porcentaje = round(data9$Porcentaje,2))
-    
-    p <- ggplot(data9,
-                aes(x = Año,
-                    y = Porcentaje)) +
+    p <- ggplot(agrupacion_año,
+                aes(x = agrupacion_año$`votes_filtradosnecesarios$year`,
+                    y = agrupacion_año$porcentaje)) +
       geom_line(col = "blue") +
       geom_point(col = "red") +
       ggtitle(NULL) +
@@ -293,8 +290,8 @@ server <- function(input, output) {
   
   observeEvent(input$sumButton, {
     
-    selected_data <- subset(data9, data9$Año >= input$yearRange[1] & data9$Año <= input$yearRange[2])
-    sum_values <- sum(selected_data$Porcentaje)
+    selected_data <- subset(agrupacion_año, agrupacion_año$`votes_filtradosnecesarios$year` >= input$yearRange[1] & agrupacion_año$`votes_filtradosnecesarios$year` <= input$yearRange[2])
+    sum_values <- sum(selected_data$porcentaje)
     
     output$sumText <- renderText({
       paste("El porcentaje total para el rango de años seleccionado es:", round(sum_values, 2))
