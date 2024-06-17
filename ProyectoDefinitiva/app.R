@@ -144,9 +144,10 @@ print(grafico11)
 # de votos Sí, e igualmente se observa un periodo a inicios y finales de los 
 # años 80 en el cual la cantidad de votos Sí aumento considerablemente.
 
+######APLICACION#####
 
 ui <- fluidPage(
-  titlePanel("App sobre tarea 2"),
+  titlePanel("Votos hechos por los países miembros de las naciones unidas durante los años 1947 al 2013"),
   
   tabsetPanel(
     tabPanel("Tabla Votos Filtrados", 
@@ -156,11 +157,60 @@ ui <- fluidPage(
     tabPanel("Tabla Agrupación por Año",
              dataTableOutput("tabla_resumen")),
     tabPanel("Tabla Agrupacion por Pais",
-             dataTableOutput("tabla_resultados_pais"))
+             dataTableOutput("tabla_resultados_pais")),
+    tabPanel("Gráfico 1",
+             fluidPage(
+               
+               # Application title
+               titlePanel("Porcentaje de votos Sí según año por los países de las Naciones Unidas"),
+               
+               # Sidebar with a slider input for number of bins 
+               sidebarLayout(
+                 sidebarPanel(
+                   # slider para seleccionar el rango de años
+                   
+                   sliderInput("yearRange",
+                               "Seleccione el rango de años:",
+                               min = 1947,
+                               max = 2013,
+                               value = c(1977,1989)),
+                   
+                   # boton para sumar el porcentaje del rango
+                   actionButton("sumButton", "Calcular porcentaje total")
+                 ),
+                 
+                 # Show a plot of the generated distribution
+                 mainPanel(
+                   plotlyOutput("lineplot"),
+                   textOutput("sumText"))
+               )
+             )
+    ),
+    tabPanel("Gráfico 2",
+             fluidPage(
+               
+               # Application title
+               titlePanel("Cantidad total de votos Sí de los 6 países con más votos Sí entre los años 1947-2013"),
+               
+               
+               checkboxGroupInput("selected_countries", "Seleccione los países:", 
+                                  choices = c("Egypt", "Mexico", "Pakistan", "Philippines", "Thailand", "Venezuela"),
+                                  selected = "Egypt",
+                                  inline = T),
+               
+               ),
+             
+             mainPanel(
+               plotOutput("linePlot2"),
+
+               )
+             
+    )
   )
 )
 
-
+                   
+             
 server <- function(input, output) {
   
   resultados <- reactive({
@@ -213,7 +263,75 @@ server <- function(input, output) {
                 pageLength = 10
               ))
   })
+  
+  #grafico 1
+  #crear datos reactivos
+  
+  datos_reactivos <- reactive({paste(sum_values,input$yearRange)})
+  
+  output$lineplot <- renderPlotly({
+    
+    # dibuja el histograma
+    
+    data9 <- data.frame(Año = agrupacion_año$`votes_filtradosnecesarios$year`,
+                        Porcentaje = round(data9$Porcentaje,2))
+    
+    p <- ggplot(data9,
+                aes(x = Año,
+                    y = Porcentaje)) +
+      geom_line(col = "blue") +
+      geom_point(col = "red") +
+      ggtitle(NULL) +
+      xlab("Año") +
+      ylab("Porcentaje total") +
+      scale_x_continuous(limits = c(1947, 2013), breaks = seq(1947, 2013, 3)) +
+      scale_y_continuous(limits = c(0,4), breaks = seq(0,4,0.5))
+    ggplotly(p)
+  })
+  
+  #calcular la suma del promedio del rango seleccionado
+  
+  observeEvent(input$sumButton, {
+    
+    selected_data <- subset(data9, data9$Año >= input$yearRange[1] & data9$Año <= input$yearRange[2])
+    sum_values <- sum(selected_data$Porcentaje)
+    
+    output$sumText <- renderText({
+      paste("El porcentaje total para el rango de años seleccionado es:", round(sum_values, 2))
+    })
+  })
+  
+  #grafico 2
+  
+    paises_seleccionados <- subset(votes_filtradosnecesarios,
+                                   votes_filtradosnecesarios$country %in% c("Mexico",
+                                                                            "Egypt",
+                                                                            "Philippines", 
+                                                                            "Pakistan",
+                                                                            "Venezuela",
+                                                                            "Thailand"))
+    
+    paises_seleccionados_ultimo <- paises_seleccionados %>%
+      group_by(paises_seleccionados$vote, country, year) %>%
+      summarise(total = n(), porcentaje = (n()/nrow(votes)*100))
+    
+    output$linePlot2 <- renderPlot({
+      req(input$selected_countries)
+      filtered_data <- subset(paises_seleccionados_ultimo, country %in% input$selected_countries)
+    
+    ggplot(filtered_data, aes(
+      x = year, y = total,
+      color = country, group = country)) +
+      geom_line() +
+      theme_linedraw() +
+      ggtitle(NULL) +
+      xlab("Año") +
+      ylab("Cantidad total") +
+      theme(legend.position = "right") +
+      scale_color_discrete(name = "País") +
+      scale_x_continuous(limits = c(1947, 2013), breaks = seq(1947, 2013, 6))}
+  
+  )
 }
-
-
+  
 shinyApp(ui = ui, server = server)
